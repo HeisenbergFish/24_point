@@ -1,0 +1,44 @@
+a = [1]
+b = [2]
+# 混合运算，a,b列表输入， 列表输出2个数的4则运算结果,和计算过程，以便最后统计结果
+def match(a, b):  # ->[[],[],[],[]]
+    if b[0] != 0:
+        return [[a[0] + b[0], f"({a[-1]}+{b[-1]})"], [a[0] - b[0], f"({a[-1]}-{b[-1]})"],
+                [a[0] * b[0], f"({a[-1]}*{b[-1]})"], [a[0] / b[0], f"({a[-1]}/{b[-1]})"]]
+    else:
+        return [[a[0] + b[0], f"({a[-1]}+{b[-1]})"], [a[0] - b[0], f"({a[-1]}-{b[-1]})"],
+                [a[0] * b[0], f"({a[-1]}*{b[-1]})"]]
+
+# 列表里的元素降级 由n 变为n-1
+def reduce(list):
+    reduced_list = []
+    for i, v in enumerate(list):
+        # i项和其他元素match运算想消
+        # 生成一个没有v的新列表，以便v 和新列表每一项match
+        list_copy = [list[j] for j, v1 in enumerate(list) if i != j]
+        for i_copy, v_copy in enumerate(list_copy):
+            list_carry = [list_copy[k] for k, v2 in enumerate(list_copy) if k != i_copy]
+            new_list = match(v, v_copy)
+            for h in new_list:
+                reduced_list.append(list_carry + [h])
+    return reduced_list
+
+#24点主程序，递归实现
+ans = []
+def point_24(list,n=4):
+    global ans
+    if n <=1:
+        for i in list:
+            if i[0]== 24 or i[0] == 23.99999999999999:
+                ans.append(i[-1])
+        return
+    else:
+        reduce_list = reduce(list)
+        for i in reduce_list:
+            point_24(i,n-1)
+
+quet = [[3],[3],[8],[8]]
+point_24(quet)
+print(f"一共有{len(set(ans))}种方法")
+for i in set(ans):
+    print(i)
